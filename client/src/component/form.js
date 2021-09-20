@@ -13,18 +13,20 @@ const Forrm = ({postid, setpostid}) => {
 
   const postt = useSelector(state => postid ? state.post.find(p => p._id === postid): null)   
   const [post, setpost] = useState({
-
     creator:'',
+    
+    
+    
+    
     title:'',
-    message:'',
     
-    
-        
+    message:'',        
     selectedfile:''
   })  
 useEffect(() => {
 if(postid){
   setpost(postt)
+
 }
 }, [postid, postt])
   let handlechange = (e)=>{
@@ -104,7 +106,5 @@ if(postid){
 </Form.Group>
 </Form>        
         </div>
-)
-  
-}
+)}
 export default Forrm

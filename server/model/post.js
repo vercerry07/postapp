@@ -6,7 +6,7 @@ let postschema = mongoose.Schema({
     title:{type:String, required:true},
     message:{type:String, required:true},
     selectedfile:{type:String},
-    likecount:{type:Number, default: 0},
+    likes:{type:[String], default: []},
     createdAt:{type: Date, default: new Date()}
 
 })

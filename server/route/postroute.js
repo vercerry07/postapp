@@ -4,21 +4,21 @@ let postroute = express.Router()
 
 let mongoose = require('mongoose')
 let Postmessage = require('../model/post')
+let auth = require('../middleware/auth')
 postroute.get('/',async(req,res)=>{
   try {
     let posts = await Postmessage.find()
-     res.json(posts)        
+
+    res.json(posts)        
   
-    } catch (err) {
-   
+    } catch (err) {   
      console.log(err)      
   }      
+
+
 })
 
-
-
-
-postroute.post('/',async(req,res)=>{
+postroute.post('/', auth,async(req,res)=>{
 
   try {
     let {title, message, creator, likecount, selectedfile} = req.body 
@@ -43,7 +43,7 @@ postroute.post('/',async(req,res)=>{
 
 
 
-postroute.patch('/:id',async(req,res)=>{
+postroute.patch('/:id',auth,async(req,res)=>{
 
   let {id: _id} = req.params
    
@@ -61,7 +61,7 @@ postroute.patch('/:id',async(req,res)=>{
      res.status(404).send('no post')  
   }
 })
-postroute.delete('/:id',async(req,res)=>{
+postroute.delete('/:id', auth,async(req,res)=>{
   let {id} = req.params  
   
   if(!mongoose.Types.ObjectId.isValid(id)) return res.status(402).send('no post')
@@ -70,13 +70,28 @@ postroute.delete('/:id',async(req,res)=>{
   res.json({msg:'post removed'})
 
 })
-postroute.patch('/:id/likepost',async(req,res)=>{
+postroute.patch('/:id/likepost', auth,async(req,res)=>{
   let {id} = req.params
+  if(!req.userId){
+   res.json({
+
+    msg:'unauthanticated'
+   })
+  }
   if(!mongoose.Types.ObjectId.isValid(id)) return res.status(402).send('no post')
         let post = await Postmessage.findById(id)
-        let updatedpost = await Postmessage.findByIdAndUpdate(id, {likecount:post.likecount + 1}, {new: true}) 
+        let index = post.likes.findIndex((id)=> id === String(req.userId))
+        if(index === -1) {
+         post.likes.push(req.userId) 
+        }
+        else {
+          
 
-        res.json(updatedpost)
-        
+          posts.likes.filter((id)=> id !== String(req.userId))
+
+        }
+        let updatedpost = await Postmessage.findByIdAndUpdate(id, post, {new: true}) 
+
+        res.json(updatedpost) 
 })
 module.exports = postroute
