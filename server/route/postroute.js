@@ -18,21 +18,16 @@ postroute.get('/',async(req,res)=>{
 
 })
 
-postroute.post('/', auth,async(req,res)=>{
+postroute.post('/',auth, async(req,res)=>{
 
   try {
-    let {title, message, creator, likecount, selectedfile} = req.body 
+    let post = req.body 
     let newpost = new Postmessage({
-      creator,
-      title,
-      message,
-      
-      selectedfile,
-      likecount
+      ...post, creator: req.userId, createdAt: new Date().toISOString()
     }) 
     
     await newpost.save()
-    res.status(201).json(newpost)
+    return res.status(201).json(newpost)
   } catch (err) {
     res.status(404).json({
       msg:err
@@ -58,7 +53,7 @@ postroute.patch('/:id',auth,async(req,res)=>{
   }else
 
   {
-     res.status(404).send('no post')  
+    return res.status(404).send('no post')  
   }
 })
 postroute.delete('/:id', auth,async(req,res)=>{

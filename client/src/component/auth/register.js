@@ -38,7 +38,14 @@ const Register = () => {
         else if(password.length < 6){
          alert('password should be at least 6 characters long')
         }
-        dispatch(signup(register), history) 
+
+        else{
+         
+
+
+        dispatch(signup(register, history)) 
+
+        }
        
         setregister({
           

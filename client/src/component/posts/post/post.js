@@ -9,9 +9,9 @@ const Post = ({post, setpostid, postid}) => {
   let history = useHistory()  
   const dispatch = useDispatch()
 
-  let handleedit = ()=>{
+  let user = JSON.parse(localStorage.getItem('profile'))  
   
-    
+  let handleedit = ()=>{  
       setpostid(post._id)
       history.push('/addpost') 
    
@@ -29,8 +29,20 @@ const Post = ({post, setpostid, postid}) => {
 
       dispatch(likepost(post._id))
       window.location.reload()
-
     }
+
+    // const Likes = () => {
+    //   if (post.likes.length > 0) {
+    //     return post.likes.find((like) => like === (user?.result?.googleId || user?.result?._id))
+    //       ? (
+    //         <> &nbsp;{post.likes.length > 2 ? `You and ${post.likes.length - 1} others` : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}` }</>
+    //       ) : (
+    //         <>&nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</>
+    //       );
+    //   }
+  
+    //   return <>&nbsp;Like</>;
+    // };  
     return (   
     
     <div>
@@ -48,11 +60,24 @@ const Post = ({post, setpostid, postid}) => {
     </Card.Text>
     {/* <Button variant="primary">Go somewhere</Button> */}
      
-     <p style={{marginLeft:'12rem'}}>- {post.creator}</p>
+     <p style={{marginLeft:'12rem'}}>- {post.name}</p>
+    {(user?.result?.googleId === post?.creator || user?.result?._id === post.creator) && (
+   <div>
+   <i className="fas fa-trash" onClick={handledelete}></i>&nbsp;     
+   </div>
     
-    <i className="far fa-edit" onClick={handleedit}></i> &nbsp;
-    <i className="fas fa-trash" onClick={handledelete}></i>
-    <i style={{marginLeft:'10rem'}} className="far fa-thumbs-up" onClick={handlelike}></i> {post.likecount}
+    ) 
+    }
+
+    {(user?.result?.googleId === post?.creator || user?.result?._id === post.creator) && (
+   <i className="far fa-edit" onClick={handleedit}></i>
+)
+    }
+    {/* <i className="far fa-edit" onClick={handleedit}></i> &nbsp;
+    <i className="fas fa-trash" onClick={handledelete}></i> */}
+    {/* <i style={{marginLeft:'10rem'}} className="far fa-thumbs-up" onClick={handlelike}></i>  */}
+    
+    {/* <Likes />  */}
   </Card.Body>
 </Card>        
      

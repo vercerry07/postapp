@@ -11,14 +11,14 @@ const Forrm = ({postid, setpostid}) => {
 
   let history = useHistory()
 
+  let user = JSON.parse(localStorage.getItem('profile'))  
   const postt = useSelector(state => postid ? state.post.find(p => p._id === postid): null)   
   const [post, setpost] = useState({
-    creator:'',
-    
-    
-    
-    
-    title:'',
+  
+  
+    // creator:'',
+       
+    title:'',   
     
     message:'',        
     selectedfile:''
@@ -37,12 +37,12 @@ if(postid){
   let handlesubmit = (e)=>{
     e.preventDefault()
     let {creator, title, message} = post
-    if(!creator || !title || !message){
+    if(!title || !message){
   
       alert('please enter required post field')
     } 
     if(postid !== null){
-       dispatch(updatepost(postid, post))
+       dispatch(updatepost(postid, {...post, name:user?.result?.name }))
 
  
       //  setpostid(null)
@@ -54,7 +54,7 @@ if(postid){
 
       else {
      // console.log(post)  
-     dispatch(addpost(post))      
+     dispatch(addpost({...post, name:user?.result?.name }))      
     }
     handleclear()
   
@@ -64,24 +64,31 @@ if(postid){
     
     setpostid(null) 
     setpost({  
-      creator:'',
+  
       title:'',
       message:'',
       selectedfile:''   
     }) 
+  }
+  if(!user?.result?.name){
+   return (
+     <div>
+     you have to sign in to create post  
+     </div>
+   )
   }
   return (
   <div>
      <h2 className='text-center'>{!postid ? 'Add post':'Update post'}</h2>      
      <hr />      
     <Form onSubmit={handlesubmit}> 
-    <Form.Group className="mb-3" controlId="formBasicEmail">
+    {/* <Form.Group className="mb-3" controlId="formBasicEmail">
     
     <Form.Label>creator</Form.Label> 
     
     <Form.Control type="text" value={post.creator} name='creator' placeholder="Enter name" onChange={handlechange}/>    
   
-    </Form.Group>     
+    </Form.Group>      */}
     <Form.Group className="mb-3" controlId="formBasicEmail">
     <Form.Label>title</Form.Label>  
     <Form.Control type="text" value={post.title} name='title' placeholder="Enter Title" onChange={handlechange}/> 

@@ -4,21 +4,36 @@ import {Navbar, Nav, Container, Button} from 'react-bootstrap'
 
 import {LinkContainer} from 'react-router-bootstrap'
 import {useDispatch} from 'react-redux'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom' 
+import decode from 'jwt-decode'
 const Navbarr = ({postid, setpostid}) => {    
   const [user, setuser] = useState(JSON.parse(localStorage.getItem('profile')))
-console.log(user)        
+
+  // console.log(user.result.name)        
 
 let location = useLocation()
-
 useEffect(() => {
-    let token = user?.token     
+    let token = user?.token   
+    
+    
+    
+    
+    if(token) {
+     
+     let decodedtoken = decode(token)
+     if(decodedtoken.exp * 1000 < new Date().getTime()){
+        
+      handlelogout()
+     }
+    }
+    
+
     setuser(JSON.parse(localStorage.getItem('profile')))  
   
   
   }, [location])  
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch() 
   
   let history = useHistory()
   
@@ -77,7 +92,7 @@ useEffect(() => {
         
         </LinkContainer> */}
         <p>{user?. result.name}</p> 
-      {user ? 
+      {user !== null || '' ? 
       <Button onClick={handlelogout} variant="outline-danger">logout</Button> :
       <Button onClick={handlesignin} variant="outline-primary">Login</Button>            
     }

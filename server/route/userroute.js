@@ -17,14 +17,14 @@ userroute.post('/signin', async(req,res)=>{
   
   
   if(!exuser){
-      res.status(404).json({ 
+      return res.status(404).json({ 
         msg:'user not found'
       
       })
   }
   let correctpassword = await bcrypt.compare(password, exuser.password)
   if(!correctpassword){
-       res.status(400).json({
+      return res.status(400).json({
          msg:'invalid credentilas'
   
         })   
@@ -45,7 +45,7 @@ userroute.post('/signup',async(req,res)=>{
        
        let exuser = await User.findOne({email})
        if(exuser){
-        res.status(400).json({
+        return res.status(400).json({
 
           msg:'user exists'
         }) 
@@ -54,17 +54,18 @@ userroute.post('/signup',async(req,res)=>{
        let user = await User.create({
 
 
-        email,
+        email:email,
         password:enpwd,
         
         name:`${firstname} ${lastname}`
        }) 
   let token = jwt.sign({email:user.email, id:user._id}, process.env.jwtkey,{ expiresIn:'1h'})
   
-  res.json({ result:user, token})
+  return res.json({ 
+    result:user, token})
       } catch (error) {
        
-        
+    console.log(error)    
     res.status(500).json({msg:'something went wrong'})
 
       } 
